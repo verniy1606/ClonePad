@@ -28,7 +28,19 @@ namespace ClonePad {
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
+            if (_isSaved) return;
 
+            DialogResult result = MessageBox.Show(
+                $"Do you want to save changes to {_title}?",
+                _appName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes) {
+                if (saveAs()) return;
+            } else if (result == DialogResult.No) {
+                return;
+            }
+
+            e.Cancel = true;
         }
 
         private void updateTitle() {
@@ -49,7 +61,7 @@ namespace ClonePad {
             updateTitle();
         }
 
-        private void saveAs() {
+        private bool saveAs() {
             SaveFileDialog saveFileDialog = new SaveFileDialog {
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 FileName = @"*.txt",
@@ -64,7 +76,11 @@ namespace ClonePad {
 
                 File.WriteAllText(path, textBox.Text);
                 saveDocument(path);
+
+                return true;
             }
+
+            return false;
         }
 
         private void textBox_TextChanged(object sender, EventArgs e) {
