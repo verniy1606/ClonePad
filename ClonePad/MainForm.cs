@@ -4,6 +4,8 @@ using System.IO;
 using System.Windows.Forms;
 using System.Reflection;
 
+using ClonePad.Utils;
+
 namespace ClonePad {
     public partial class MainForm : Form {
         // private readonly Notepad _notepad; // 将来的にはUIと処理を分離させたい
@@ -84,14 +86,11 @@ namespace ClonePad {
         }
 
         private void textBox_TextChanged(object sender, EventArgs e) {
-            Debug.WriteLine(MethodBase.GetCurrentMethod().Name);
-
             bool isSaved = (textBox.Text == _savedText);
 
             if (_isSaved == isSaved) return;
 
             _isSaved = isSaved;
-            Debug.WriteLine($"_isSaved is {_isSaved}");
 
             updateTitle();
         }
@@ -122,8 +121,8 @@ namespace ClonePad {
 
         private void mnSave_Click(object sender, EventArgs e) {
             if (!File.Exists(_title)) {
-                Debug.WriteLine(
-                    $"{MethodBase.GetCurrentMethod().Name}: Path '{_title}' does not exist. We'll open SaveAs dialog instead."
+                Logger.Info(
+                    $"Path '{_title}' does not exist. We'll open SaveAs dialog instead."
                 );
                 saveAs();
                 return;
